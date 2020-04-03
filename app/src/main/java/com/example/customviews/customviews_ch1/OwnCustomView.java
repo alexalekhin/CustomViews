@@ -14,18 +14,30 @@ public class OwnCustomView extends View {
 
     public OwnCustomView(Context context) {
         super(context);
+        init();
     }
 
     public OwnCustomView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        init();
+    }
+
+    private void init() {
         backgroundPaint = new Paint();
         backgroundPaint.setColor(0xffffaa22);
         backgroundPaint.setStyle(Paint.Style.FILL_AND_STROKE);
     }
 
+
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawRect(0f, 0f, getWidth(), getHeight(), backgroundPaint);
+        canvas.drawRect(
+                getPaddingLeft(),
+                getPaddingTop(),
+                getWidth() - getPaddingRight(),
+                getHeight() - getPaddingBottom(),
+                backgroundPaint
+        );
 
         super.onDraw(canvas);
     }

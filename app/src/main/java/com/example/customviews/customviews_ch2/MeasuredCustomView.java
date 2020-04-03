@@ -17,7 +17,7 @@ import com.example.customviews.R;
 
 public class MeasuredCustomView extends View {
 
-    public static final int DEFAULT_SIZE = 600;
+    public static final int DEFAULT_SIZE = 50;
     public static final int DEFAULT_FILL_COLOR = Color.BLACK;
 
     int[] colors;
@@ -74,7 +74,7 @@ public class MeasuredCustomView extends View {
 //        Log.d(TAG, "height spec" + MeasureSpec.toString(heightMeasureSpec));
 
         int width = getMeasurementSize(widthMeasureSpec, DEFAULT_SIZE);
-        int height = getMeasurementSize(widthMeasureSpec, DEFAULT_SIZE + 200);
+        int height = getMeasurementSize(heightMeasureSpec, DEFAULT_SIZE + 100);
 
         setMeasuredDimension(width, height);
     }
