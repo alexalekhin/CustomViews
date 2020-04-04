@@ -1,13 +1,11 @@
 package com.example.customviews.customviews_ch2;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Region;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -23,6 +21,9 @@ public class CircularActivityIndicator extends View {
 
     private Paint foregroundPaint = new Paint();
     private Paint backgroundPaint = new Paint();
+
+    private int circleSize;
+
     private int selectedAngle;
 
     private Path clipPath;
@@ -54,7 +55,7 @@ public class CircularActivityIndicator extends View {
     protected void onDraw(Canvas canvas) {
         foregroundPaint.setColor(isPressed ? PRESSED_FG_COLOR : DEFAULT_FG_COLOR);
 
-        int circleSize = getWidth();
+        circleSize = getWidth();
         if (getHeight() < circleSize) {
             circleSize = getHeight();
         }
@@ -116,15 +117,22 @@ public class CircularActivityIndicator extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Log.d(VIEW_LOG_TAG, "touch: " + event);
+
+        boolean isHandled = false;
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                changePressed(true);
 
                 previousX = event.getX();
                 previousY = event.getY();
-                return true;
+
+                isHandled = processAngleUpdate(previousX, previousY);
+
+                if (isHandled) {
+                    getParent().requestDisallowInterceptTouchEvent(true);
+                    changePressed(true);
+                }
+                return isHandled;
 
             case MotionEvent.ACTION_UP:
                 changePressed(false);
@@ -134,21 +142,27 @@ public class CircularActivityIndicator extends View {
                 float currentX = event.getX();
                 float currentY = event.getY();
 
-                selectedAngle = getNewAngle(currentX, currentY);
+                isHandled = processAngleUpdate(currentX, currentY);
                 invalidate();
-                return true;
+                return isHandled;
 
             default:
                 return false;
         }
     }
 
-    private int getNewAngle(float x, float y) {
+    private boolean processAngleUpdate(float x, float y) {
         x -= (float) getWidth() / 2;
         y -= (float) getHeight() / 2;
 
+        double radius = Math.sqrt(x * x + y * y);
+
+        if (radius > (float) circleSize / 2)
+            return false;
+
         int angle = (int) (180.0 * Math.atan2(y, x) / Math.PI) + 90;
-        return (angle > 0) ? angle : 360 + angle;
+        selectedAngle = (angle > 0) ? angle : 360 + angle;
+        return true;
     }
 
     private void changePressed(boolean isPressed) {
