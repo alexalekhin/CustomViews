@@ -15,24 +15,24 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        for (i in 0 until 50) {
-            val customView = MeasuredCustomView.Builder(applicationContext)
-                .topLeftColor(colors[Random.nextInt(0, 4)])
-                .topRightColor(colors[Random.nextInt(0, 4)])
-                .bottomLeftColor(colors[Random.nextInt(0, 4)])
-                .bottomRightColor(colors[Random.nextInt(0, 4)])
-                .build()
-                .apply {
-                val w = Random.nextInt(200) + 50
-                val h = Random.nextInt(200) + 100
-
-                layoutParams = ViewGroup.LayoutParams(w, h)
-                setPadding(2.toPx, 2.toPx, 2.toPx, 2.toPx)
-            }
-
-            rowLayout.addView(customView)
-        }
+//
+//        for (i in 0 until 50) {
+//            val customView = MeasuredCustomView.Builder(applicationContext)
+//                .topLeftColor(colors[Random.nextInt(0, 4)])
+//                .topRightColor(colors[Random.nextInt(0, 4)])
+//                .bottomLeftColor(colors[Random.nextInt(0, 4)])
+//                .bottomRightColor(colors[Random.nextInt(0, 4)])
+//                .build()
+//                .apply {
+//                val w = Random.nextInt(200) + 50
+//                val h = Random.nextInt(200) + 100
+//
+//                layoutParams = ViewGroup.LayoutParams(w, h)
+//                setPadding(2.toPx, 2.toPx, 2.toPx, 2.toPx)
+//            }
+//
+//            rowLayout.addView(customView)
+//        }
     }
 
     companion object {
