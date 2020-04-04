@@ -1,5 +1,6 @@
 package com.example.customviews.customviews_ch2;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -27,6 +28,7 @@ public class CircularActivityIndicator extends View {
     private Path clipPath;
 
     private boolean isPressed = false;
+    private float previousX, previousY;
 
     public CircularActivityIndicator(Context context) {
         super(context);
@@ -119,15 +121,34 @@ public class CircularActivityIndicator extends View {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 changePressed(true);
+
+                previousX = event.getX();
+                previousY = event.getY();
                 return true;
 
             case MotionEvent.ACTION_UP:
                 changePressed(false);
                 return true;
 
+            case MotionEvent.ACTION_MOVE:
+                float currentX = event.getX();
+                float currentY = event.getY();
+
+                selectedAngle = getNewAngle(currentX, currentY);
+                invalidate();
+                return true;
+
             default:
                 return false;
         }
+    }
+
+    private int getNewAngle(float x, float y) {
+        x -= (float) getWidth() / 2;
+        y -= (float) getHeight() / 2;
+
+        int angle = (int) (180.0 * Math.atan2(y, x) / Math.PI) + 90;
+        return (angle > 0) ? angle : 360 + angle;
     }
 
     private void changePressed(boolean isPressed) {
