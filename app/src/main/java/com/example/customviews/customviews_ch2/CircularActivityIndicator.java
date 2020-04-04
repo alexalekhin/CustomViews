@@ -15,6 +15,7 @@ import androidx.annotation.ColorInt;
 public class CircularActivityIndicator extends View {
 
     @ColorInt
+    private static final int PRESSED_FG_COLOR = 0xff0000ff;
     private static final int DEFAULT_FG_COLOR = 0xffff0000;
     @ColorInt
     private static final int DEFAULT_BG_COLOR = 0xffa0a0a0;
@@ -24,6 +25,8 @@ public class CircularActivityIndicator extends View {
     private int selectedAngle;
 
     private Path clipPath;
+
+    private boolean isPressed = false;
 
     public CircularActivityIndicator(Context context) {
         super(context);
@@ -47,6 +50,8 @@ public class CircularActivityIndicator extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        foregroundPaint.setColor(isPressed ? PRESSED_FG_COLOR : DEFAULT_FG_COLOR);
+
         int circleSize = getWidth();
         if (getHeight() < circleSize) {
             circleSize = getHeight();
@@ -109,8 +114,24 @@ public class CircularActivityIndicator extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Log.d(getTag().toString(), "touch: " + event);
+        Log.d(VIEW_LOG_TAG, "touch: " + event);
 
-        return super.onTouchEvent(event);
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                changePressed(true);
+                return true;
+
+            case MotionEvent.ACTION_UP:
+                changePressed(false);
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    private void changePressed(boolean isPressed) {
+        this.isPressed = isPressed;
+        invalidate();
     }
 }
