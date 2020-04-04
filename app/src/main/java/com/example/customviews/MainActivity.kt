@@ -14,28 +14,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        activityContent.addView(
-
-            MeasuredCustomView.Builder(this)
-                .topLeftColor(BRIGHT_GREEN)
-                .topRightColor(BRIGHT_RED)
-                .bottomLeftColor(BRIGHT_YELLOW)
-                .bottomRightColor(BRIGHT_BLUE)
-                .build()
-                .apply {
-                    layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
-                    setPadding(
-                        UtilsJava.dpToPixels(16),
-                        UtilsJava.dpToPixels(16),
-                        16.toPx,
-                        16.toPx
-                    )
-                }
-        )
     }
 
     companion object {
