@@ -1,13 +1,9 @@
 package com.example.customviews.customviews_ch2;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Rect;
 import android.graphics.Region;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
@@ -17,18 +13,24 @@ import android.widget.Scroller;
 
 import androidx.annotation.ColorInt;
 
-import com.example.customviews.R;
+import com.example.customviews.utils.UtilsJava;
 
 public class CircularActivityIndicator extends View {
 
     @ColorInt
     private static final int PRESSED_FG_COLOR = 0xff0000ff;
+    @ColorInt
     private static final int DEFAULT_FG_COLOR = 0xffff0000;
     @ColorInt
     private static final int DEFAULT_BG_COLOR = 0xffa0a0a0;
+    @ColorInt
+    private static final int BLACK_COLOR = 0xff000000;
+
+    private static final int BORDER_SIZE_DP = 4;
 
     private Paint foregroundPaint = new Paint();
     private Paint backgroundPaint = new Paint();
+    private Paint indicatorBorderPaint = new Paint();
 
     private int circleSize;
 
@@ -40,11 +42,6 @@ public class CircularActivityIndicator extends View {
 
     private GestureDetector gestureDetector;
     private Scroller angleScroller;
-
-    private Bitmap backgroundBitmap;
-    private Rect backgroundRectSource;
-    private Rect backgroundRectDestination;
-    private Matrix backgroundScaleMatrix = new Matrix();
 
     public CircularActivityIndicator(Context context) {
         super(context);
@@ -62,6 +59,12 @@ public class CircularActivityIndicator extends View {
 
         backgroundPaint.setColor(backgroundColor);
         backgroundPaint.setStyle(Paint.Style.FILL);
+
+        indicatorBorderPaint.setAntiAlias(true);
+        indicatorBorderPaint.setColor(BLACK_COLOR);
+        indicatorBorderPaint.setStyle(Paint.Style.STROKE);
+        indicatorBorderPaint.setStrokeWidth(UtilsJava.dpToPixels(BORDER_SIZE_DP));
+        indicatorBorderPaint.setStrokeCap(Paint.Cap.BUTT);
 
         selectedAngle = 280;
 
@@ -111,16 +114,6 @@ public class CircularActivityIndicator extends View {
                 return false;
             }
         });
-
-        backgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.harold);
-
-        backgroundRectSource = new Rect(
-                0,
-                0,
-                backgroundBitmap.getWidth() / 2,
-                backgroundBitmap.getHeight()
-        );
-        backgroundRectDestination = new Rect();
     }
 
     private void endGesture() {
@@ -166,15 +159,6 @@ public class CircularActivityIndicator extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (backgroundBitmap != null) {
-            backgroundRectDestination.right = getWidth();
-            backgroundRectDestination.bottom = getHeight();
-
-            canvas.save();
-            canvas.rotate(selectedAngle, (float) backgroundBitmap.getWidth() / 2, (float) backgroundBitmap.getHeight() / 2);
-            canvas.drawBitmap(backgroundBitmap,backgroundRectSource, backgroundRectDestination, null);
-            canvas.restore();
-        }
 
         boolean isScrollNotFinished = angleScroller.computeScrollOffset();
         selectedAngle = angleScroller.getCurrX();
@@ -191,22 +175,16 @@ public class CircularActivityIndicator extends View {
         int horizontalMargin = (getWidth() - circleSize) / 2;
         int verticalMargin = (getHeight() - circleSize) / 2;
 
-        if (clipPath == null) {
-            int clipWidth = (int) (circleSize * 0.75);
+        int clipWidth = (int) (circleSize * 0.75);
 
-            int clipX = (getWidth() - clipWidth) / 2;
-            int clipY = (getHeight() - clipWidth) / 2;
+        int clipX = (getWidth() - clipWidth) / 2;
+        int clipY = (getHeight() - clipWidth) / 2;
+
+        if (clipPath == null) {
 
             clipPath = new Path();
 
-            clipPath.addArc(
-                    clipX,
-                    clipY,
-                    clipX + clipWidth,
-                    clipY + clipWidth,
-                    0,
-                    360
-            );
+            clipPath.addArc(clipX, clipY, clipX + clipWidth, clipY + clipWidth, 0, 360);
         }
 
         canvas.clipRect(0, 0, getWidth(), getHeight());
@@ -240,6 +218,28 @@ public class CircularActivityIndicator extends View {
                 selectedAngle,
                 true,
                 foregroundPaint
+        );
+
+        canvas.drawArc(
+                horizontalMargin + (float) UtilsJava.dpToPixels(BORDER_SIZE_DP) / 2,
+                verticalMargin + (float) UtilsJava.dpToPixels(BORDER_SIZE_DP) / 2,
+                circleSize + horizontalMargin - (float) UtilsJava.dpToPixels(BORDER_SIZE_DP) / 2,
+                circleSize + verticalMargin  - (float) UtilsJava.dpToPixels(BORDER_SIZE_DP) / 2,
+                0,
+                selectedAngle,
+                true,
+                indicatorBorderPaint
+        );
+
+        canvas.drawArc(
+                clipX - (float) UtilsJava.dpToPixels(BORDER_SIZE_DP) / 2,
+                clipY - (float) UtilsJava.dpToPixels(BORDER_SIZE_DP) / 2,
+                clipX + clipWidth + (float) UtilsJava.dpToPixels(BORDER_SIZE_DP) / 2,
+                clipY + clipWidth  + (float) UtilsJava.dpToPixels(BORDER_SIZE_DP) / 2,
+                0,
+                selectedAngle,
+                true,
+                indicatorBorderPaint
         );
     }
 }
