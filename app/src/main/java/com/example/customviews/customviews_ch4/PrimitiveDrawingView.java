@@ -1,12 +1,18 @@
 package com.example.customviews.customviews_ch4;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.View;
 
 import androidx.annotation.ColorInt;
+
+import com.example.customviews.R;
 
 public class PrimitiveDrawingView extends View {
 
@@ -21,7 +27,10 @@ public class PrimitiveDrawingView extends View {
     public static final int POINTS_NUM = 20;
 
     private Paint paint = new Paint();
-    private float[] pointsArray;
+    private Path path;
+
+    private Bitmap backgroundBitmap;
+    private Matrix backgroundMatrix = new Matrix();
 
     public PrimitiveDrawingView(Context context) {
         super(context);
@@ -36,28 +45,46 @@ public class PrimitiveDrawingView extends View {
     private void init() {
         paint.setStyle(Paint.Style.FILL);
         paint.setAntiAlias(true);
+        paint.setColor(WHITE_COLOR);
+
+        backgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.harold);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawColor(DEFAULT_BG_COLOR);
 
-        if (pointsArray == null) {
-            pointsArray = new float[POINTS_NUM * 2];
+        if (path == null) {
+            float[] pointsArray = new float[POINTS_NUM * 3];
             for (int i = 0; i < POINTS_NUM; i++) {
-                pointsArray[i * 2] = (float) Math.random() * getWidth();
-                pointsArray[i * 2 + 1] = (float) Math.random() * getHeight();
+                pointsArray[i * 3] = (float) Math.random() * getWidth();
+                pointsArray[i * 3 + 1] = (float) Math.random() * getHeight();
+                pointsArray[i * 3 + 2] = (float) Math.random() * ((float) getWidth() / 4);
             }
+
+            path = new Path();
+
+            for (int i = 0; i < pointsArray.length / 3; i++) {
+                path.addCircle(
+                        pointsArray[i * 3],
+                        pointsArray[i * 3 + 1],
+                        pointsArray[i * 3 + 2],
+                        Path.Direction.CW
+                );
+            }
+            path.close();
         }
 
-        paint.setColor(DEFAULT_FG_COLOR);
-        paint.setStrokeWidth(4.f);
-        paint.setStrokeCap(Paint.Cap.BUTT);
-        canvas.drawLines(pointsArray, paint);
+        canvas.save();
 
-        paint.setColor(WHITE_COLOR);
-        paint.setStrokeWidth(10.f);
-        paint.setStrokeCap(Paint.Cap.BUTT);
-        canvas.drawPoints(pointsArray, paint);
+        canvas.clipPath(path);
+        if (backgroundBitmap != null) {
+            backgroundMatrix.reset();
+            float scale = (float) getWidth() / backgroundBitmap.getWidth();
+            backgroundMatrix.postScale(scale, scale);
+            canvas.drawBitmap(backgroundBitmap, backgroundMatrix, null);
+        }
+
+        canvas.restore();
     }
 }
