@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ScrollView
+    <com.example.customviews.customviews_ch4.PrimitiveDrawingView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -15,37 +15,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimaryDark"
-                android:gravity="center"
-                android:paddingTop="100dp"
-                android:paddingBottom="100dp"
-                android:text="First"
-                android:textColor="@android:color/white" />
-
-            <com.example.customviews.customviews_ch2.CircularActivityIndicator
-                android:layout_width="match_parent"
-                android:layout_height="300dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimaryDark"
-                android:gravity="center"
-                android:paddingTop="100dp"
-                android:paddingBottom="100dp"
-                android:text="Second"
-                android:textColor="@android:color/white" />
-
-        </LinearLayout>
-
-    </ScrollView>
+    </com.example.customviews.customviews_ch4.PrimitiveDrawingView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
