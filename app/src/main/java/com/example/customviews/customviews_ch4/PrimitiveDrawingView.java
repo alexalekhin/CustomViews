@@ -8,20 +8,20 @@ import android.view.View;
 
 import androidx.annotation.ColorInt;
 
-import java.util.ArrayList;
-
 public class PrimitiveDrawingView extends View {
 
     @ColorInt
-    private static final int DEFAULT_FG_COLOR = 0xffff0000;
+    private static final int DEFAULT_FG_COLOR = 0xffa0a0a0;
     @ColorInt
-    private static final int DEFAULT_BG_COLOR = 0xffa0a0a0;
+    private static final int DEFAULT_BG_COLOR = 0xff000221;
     @ColorInt
     private static final int BLACK_COLOR = 0xff000000;
+    private static final int WHITE_COLOR = 0xffffffff;
+
+    public static final int POINTS_NUM = 20;
 
     private Paint paint = new Paint();
-    private ArrayList<Float> rectanglesList;
-    private ArrayList<Integer> colors;
+    private float[] pointsArray;
 
     public PrimitiveDrawingView(Context context) {
         super(context);
@@ -34,9 +34,6 @@ public class PrimitiveDrawingView extends View {
     }
 
     private void init() {
-        rectanglesList = new ArrayList<>();
-        colors = new ArrayList<>();
-
         paint.setStyle(Paint.Style.FILL);
         paint.setAntiAlias(true);
     }
@@ -45,29 +42,22 @@ public class PrimitiveDrawingView extends View {
     protected void onDraw(Canvas canvas) {
         canvas.drawColor(DEFAULT_BG_COLOR);
 
-        int width = getWidth();
-        int height = getHeight();
-
-        for (int i = 0; i < 2; i++) {
-            rectanglesList.add((float) Math.random() * width);
-            rectanglesList.add((float) Math.random() * height);
+        if (pointsArray == null) {
+            pointsArray = new float[POINTS_NUM * 2];
+            for (int i = 0; i < POINTS_NUM; i++) {
+                pointsArray[i * 2] = (float) Math.random() * getWidth();
+                pointsArray[i * 2 + 1] = (float) Math.random() * getHeight();
+            }
         }
 
-        colors.add(0xff000000 | (int) (0xffffff * Math.random()));
+        paint.setColor(DEFAULT_FG_COLOR);
+        paint.setStrokeWidth(4.f);
+        paint.setStrokeCap(Paint.Cap.BUTT);
+        canvas.drawLines(pointsArray, paint);
 
-        for (int i = 0; i < rectanglesList.size() / 4; i++) {
-            paint.setColor(colors.get(i));
-            canvas.drawRoundRect(
-                    rectanglesList.get(i * 4),
-                    rectanglesList.get(i * 4 + 1),
-                    rectanglesList.get(i * 4 + 2),
-                    rectanglesList.get(i * 4 + 3),
-                    40,
-                    40,
-                    paint
-            );
-        }
-
-        if(rectanglesList.size() < 400) postInvalidateDelayed(20);
+        paint.setColor(WHITE_COLOR);
+        paint.setStrokeWidth(10.f);
+        paint.setStrokeCap(Paint.Cap.BUTT);
+        canvas.drawPoints(pointsArray, paint);
     }
 }
