@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.text.StaticLayout;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,6 +45,8 @@ public class PrimitiveDrawingView extends View {
         pathPaint.setAntiAlias(true);
         pathPaint.setColor(WHITE_COLOR);
         pathPaint.setStrokeWidth(5.f);
+        pathPaint.setTextSize(50.f);
+        pathPaint.setTextAlign(Paint.Align.CENTER);
 
         pointsPaint.setStyle(Paint.Style.STROKE);
         pointsPaint.setAntiAlias(true);
@@ -88,6 +91,10 @@ public class PrimitiveDrawingView extends View {
         }
 
         canvas.drawPath(path, pathPaint);
+
+        if (!pointList.isEmpty()) {
+            canvas.drawTextOnPath("Bezier curves drawer Custom View", path, 0f, 0f, pathPaint);
+        }
 
         for (int i = 0; i < pointList.size() / 2; i++) {
             float x = pointList.get(i * 2);
